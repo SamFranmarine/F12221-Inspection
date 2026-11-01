@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>F12221 Inspection ITP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<style>
+:root{--bg:#eef1f5;--panel:#fff;--fg:#14213a;--muted:#5a6780;--line:#d3d9e3;--navy:#002060;--accent:#0b5cad;--btnfg:#fff;--err:#b01c1c;--ok:#1d6b35;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#0c1220;--panel:#121a2c;--fg:#e4e9f2;--muted:#93a0b8;--line:#26324a;--navy:#8fb3ff;--accent:#6aa8ff;--btnfg:#0c1220;--err:#ff8a8a;--ok:#7fd69a;color-scheme:dark}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 "IBM Plex Sans",Helvetica,Arial,sans-serif}
+a{color:var(--accent)}a:hover{color:var(--navy)}
+main{min-height:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.brand{background:#002060;color:#fff;padding:44px 48px;display:flex;flex-direction:column;gap:0;padding-left:max(48px,env(safe-area-inset-left,0px))}
+.kicker{font:600 11px "IBM Plex Mono",monospace;letter-spacing:.1em;opacity:.8}
+.brand h1{margin:26px 0 8px;font-size:30px;line-height:1.1;font-weight:600;letter-spacing:-.01em;text-wrap:balance}
+.sub{margin:0;opacity:.8;font-size:15px}
+.cards{margin-top:auto;padding-top:32px;display:grid;gap:10px}
+a.tool{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;align-items:center;border:1px solid rgba(255,255,255,.28);border-radius:8px;padding:14px 16px;text-decoration:none;color:#fff;background:rgba(255,255,255,.04)}
+a.tool:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.5);color:#fff}
+a.tool h2{margin:0;font-size:15px;font-weight:600}
+a.tool p{margin:0;grid-column:1/-1;font-size:12.5px;opacity:.78}
+a.tool::after{content:"›";font-size:20px;opacity:.7;grid-column:2;grid-row:1;align-self:center}
+a.tool h2{grid-column:1;grid-row:1}
+.brand .note{margin:18px 0 0;font-size:12px;line-height:1.5;opacity:.72}
+.brand .note a{color:#fff}
+.panel{position:relative;background:var(--panel);display:grid;align-content:center;padding:88px 44px 48px;padding-right:max(44px,env(safe-area-inset-right,0px))}
+.logo{position:absolute;right:28px;top:22px;height:64px;width:auto}
+.stack{max-width:400px;width:100%;justify-self:center;display:grid;gap:18px}
+.auth{display:grid;gap:12px}
+.auth h2{margin:0;color:var(--navy);font-size:20px;font-weight:600}
+.auth p{margin:0;line-height:1.5}
+label{font-size:12px;color:var(--muted);display:grid;gap:4px}
+input{font:14px "IBM Plex Sans",Helvetica,Arial,sans-serif;padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg);width:100%}
+input:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.pw{position:relative}
+.pw button{position:absolute;right:8px;top:50%;transform:translateY(-50%);font:600 12px "IBM Plex Sans",sans-serif;background:none;border:none;color:var(--accent);cursor:pointer;padding:4px}
+.primary{font:600 14px "IBM Plex Sans",Helvetica,Arial,sans-serif;padding:11px;border-radius:6px;border:1px solid var(--navy);background:var(--navy);color:var(--btnfg);cursor:pointer}
+.primary:disabled{opacity:.6;cursor:wait}
+.link{font:13px "IBM Plex Sans",sans-serif;background:none;border:none;color:var(--accent);text-decoration:none;cursor:pointer;padding:0;justify-self:start;text-align:left}
+.link:hover{text-decoration:underline}
+.msg{font-size:13px;min-height:1.2em;color:var(--err);margin:0}
+.msg.ok{color:var(--ok)}
+.hint{font-size:12.5px;color:var(--muted)}
+.who{display:flex;align-items:center;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:13px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.who b{color:var(--fg)}
+.badge{font:600 10.5px "IBM Plex Mono",monospace;padding:3px 8px;border-radius:999px;border:1px solid var(--line);color:var(--navy)}
+.staffnote{border:1px solid var(--line);border-left:4px solid #e9a23b;border-radius:6px;padding:10px 14px;margin:0;font-size:13px}
+.staffnote a{font-weight:600}
+#v-home{display:grid;gap:16px}
+.home-hint{margin:0;font-size:13px;color:var(--muted);line-height:1.5}
+@media (max-width:820px){
+  html,body{height:auto}
+  main{grid-template-columns:minmax(0,1fr)}
+  .brand{padding:28px 20px 24px}
+  .brand h1{font-size:24px;margin-top:14px}
+  .cards{margin-top:20px;padding-top:0}
+  .panel{padding:84px 20px 40px;align-content:start}
+  .logo{height:48px;right:20px;top:18px}
+}
+</style></head>
+<body><main>
+  <section class="brand">
+    <div class="kicker">FRANMARINE UNDERWATER SERVICES</div>
+    <h1>F12221 CIP Structural Remediation</h1>
+    <p class="sub">Christmas Island · Inspection &amp; UT ITP (F12221-ITP-002)</p>
+    <div class="cards" id="tool-cards" hidden>
+      <a class="tool" href="ssl.html"><h2>SSL Inspection ITP</h2><p>South Ship Loader — four towers, tie bracing, access jetty.</p></a>
+      <a class="tool" href="nsl.html"><h2>NSL Inspection ITP</h2><p>North Arm Pierhead — piles 17–35, columns NW3–SE3.</p></a>
+    </div>
+    <p class="note" id="note">Franmarine staff can edit. Other users need to be added by Franmarine (Access tab in either tool) before they can sign in, and start as viewers.</p>
+    <p class="note local" id="local" hidden>The team connection isn't set up (config.js is blank or the sign-in library couldn't load). The tools still open in <b>Local only</b> mode — data stays in this browser. <a href="ssl.html">SSL</a> · <a href="nsl.html">NSL</a></p>
+  </section>
+
+  <section class="panel">
+    <img class="logo" src="franmarine-logo.jpg" alt="Franmarine">
+    <div class="stack">
+      <!-- signed out: email + password -->
+      <section class="auth" id="v-signin" hidden>
+        <h2>Sign in</h2>
+        <form id="f-signin" class="auth" novalidate>
+          <label>Email address<input id="si-email" type="email" autocomplete="username" required></label>
+          <label>Password<span class="pw"><input id="si-pw" type="password" autocomplete="current-password" required><button type="button" class="show" aria-label="Show password">Show</button></span></label>
+          <button class="primary" id="si-go" type="submit">Sign in</button>
+        </form>
+        <p class="msg" id="si-msg" role="alert"></p>
+        <button type="button" class="link" id="to-link">First time here, or forgot your password?</button>
+        <button type="button" class="link" id="to-request">Not a Franmarine user? Request access to view the data</button>
+      </section>
+
+      <!-- request a set-password link -->
+      <section class="auth" id="v-link" hidden>
+        <h2 id="ln-title">Set or reset your password</h2>
+        <p id="ln-intro">Enter your email address and we'll send you a one-time link. Open it on this device to choose a password; after that you sign in with your email and password.</p>
+        <form id="f-link" class="auth" novalidate>
+          <label>Email address<input id="ln-email" type="email" autocomplete="email" required></label>
+          <button class="primary" id="ln-go" type="submit">Email me a link</button>
+        </form>
+        <p class="msg" id="ln-msg" role="alert"></p>
+        <button type="button" class="link" id="to-signin">Back to sign in</button>
+      </section>
+
+      <section class="auth" id="v-sent" hidden>
+        <h2>Check your email</h2>
+        <p>We've sent a link to <b id="sent-to"></b>. Open it on this device to set your password. It can take a minute; check junk mail too.</p>
+        <button type="button" class="link" id="sent-back">Back to sign in</button>
+      </section>
+
+      <!-- arrived from the link, or chose "change password" -->
+      <section class="auth" id="v-setpw" hidden>
+        <h2>Choose a password</h2>
+        <p class="hint">Signed in as <b id="sp-email"></b>. At least 8 characters.</p>
+        <form id="f-setpw" class="auth" novalidate>
+          <input type="email" id="sp-user" autocomplete="username" hidden>
+          <label>New password<span class="pw"><input id="sp-pw" type="password" autocomplete="new-password" minlength="8" required><button type="button" class="show" aria-label="Show password">Show</button></span></label>
+          <label>Confirm password<input id="sp-pw2" type="password" autocomplete="new-password" minlength="8" required></label>
+          <button class="primary" id="sp-go" type="submit">Save password</button>
+        </form>
+        <p class="msg" id="sp-msg" role="alert"></p>
+        <button type="button" class="link" id="sp-skip">Skip for now</button>
+      </section>
+
+      <section class="auth" id="v-wait"><p>Loading…</p></section>
+
+      <!-- signed in -->
+      <section id="v-home" hidden>
+        <div class="who" id="who"></div>
+        <p class="msg" id="home-msg" role="alert"></p>
+        <section class="auth" id="v-request" hidden>
+          <h2>Request access</h2>
+          <p>Tell us who you are and Franmarine will review your request. Approved users can view the inspection data and export reports.</p>
+          <form id="f-request" class="auth" novalidate>
+            <label>Your name<input id="rq-name" autocomplete="name" maxlength="120" required></label>
+            <label>Company<input id="rq-company" autocomplete="organization" maxlength="120"></label>
+            <label>Why you need access<input id="rq-reason" maxlength="500" placeholder="e.g. CIP asset engineer, reviewing UT results"></label>
+            <button class="primary" id="rq-go" type="submit">Send request</button>
+          </form>
+          <p class="msg" id="rq-msg" role="alert"></p>
+        </section>
+        <section class="auth" id="v-requested" hidden>
+          <h2>Request sent</h2>
+          <p id="rq-status"></p>
+          <button type="button" class="link" id="rq-edit">Update my request</button>
+        </section>
+        <p class="staffnote" id="staff-req" hidden></p>
+        <p class="home-hint">Open a tool from the list on the left. One sign-in covers this page, SSL and NSL.</p>
+      </section>
+    </div>
+  </section>
+</main>
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const CFG = window.F12221_CONFIG || {}, STAFF = '@' + (CFG.STAFF_DOMAIN || 'franmarine.com.au');
+  const HERE = location.origin + location.pathname;
+  const VIEWS = ['v-signin','v-link','v-sent','v-setpw','v-wait','v-home'];
+  const show = v => { VIEWS.forEach(id => { $(id).hidden = id !== v; }); if(v !== 'v-home') $('tool-cards').hidden = true; };
+  const msg = (id, t, ok) => { const m = $(id); m.textContent = t || ''; m.classList.toggle('ok', !!ok); };
+  const okEmail = e => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e);
+  document.querySelectorAll('.pw .show').forEach(b => b.addEventListener('click', () => {
+    const i = b.previousElementSibling, on = i.type === 'password'; i.type = on ? 'text' : 'password'; b.textContent = on ? 'Hide' : 'Show'; }));
+
+  if(!(CFG.SUPABASE_URL && CFG.SUPABASE_ANON_KEY) || !window.supabase || !window.supabase.createClient){
+    show(null); $('local').hidden = false; $('note').hidden = true; return;
+  }
+  // same settings as the tools, so one sign-in covers the landing page, SSL and NSL
+  const sb = window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY, {auth:{persistSession:true, detectSessionInUrl:true, flowType:'implicit'}});
+  const wantSetPw = /[?&]setpw=1/.test(location.search) || /type=recovery/.test(location.hash);
+  let user = null, shown = false;
+
+  async function home(){
+    show('v-home'); msg('home-msg', '');
+    const who = $('who'); who.replaceChildren();
+    const r = await sb.rpc('my_role');
+    const role = r.error ? null : r.data;
+    const b = document.createElement('b'); b.textContent = user.email;
+    const badge = document.createElement('span'); badge.className = 'badge'; badge.textContent = role === 'editor' ? 'EDITOR' : role === 'viewer' ? 'VIEW ONLY' : 'NO ACCESS';
+    const cp = document.createElement('button'); cp.type = 'button'; cp.className = 'link'; cp.textContent = 'Change password'; cp.addEventListener('click', () => setPw());
+    const so = document.createElement('button'); so.type = 'button'; so.className = 'link'; so.textContent = 'Sign out';
+    so.addEventListener('click', async () => { await sb.auth.signOut(); user = null; show('v-signin'); });
+    who.append('Signed in as ', b, badge, cp, so);
+    $('v-request').hidden = true; $('v-requested').hidden = true; $('staff-req').hidden = true; $('tool-cards').hidden = !role;
+    if(r.error) msg('home-msg', 'Could not check your access: ' + r.error.message);
+    else if(!role) await requestView();
+    else if(user.email.endsWith(STAFF)) staffRequests();
+  }
+  // ---- access requests
+  async function requestView(edit){
+    const {data, error} = await sb.from('access_requests').select('name,company,reason,status,requested_at').eq('email', user.email).maybeSingle();
+    if(error){ msg('home-msg', "This address doesn't have access to the project yet. Ask your Franmarine contact to add you, then reload this page."); return; }
+    if(data && !edit){
+      $('v-requested').hidden = false; $('v-request').hidden = true;
+      $('rq-status').textContent = data.status === 'declined'
+        ? 'Your request was declined. If you think this is a mistake, contact your Franmarine project contact or update your request below.'
+        : `Requested ${new Date(data.requested_at).toLocaleDateString('en-AU', {day:'numeric', month:'short', year:'numeric'})}. Franmarine will review it — once approved, reload this page and the SSL and NSL tools will appear.`;
+      return; }
+    $('v-requested').hidden = true; $('v-request').hidden = false; msg('rq-msg', '');
+    if(data){ $('rq-name').value = data.name || ''; $('rq-company').value = data.company || ''; $('rq-reason').value = data.reason || ''; }
+    else if(!$('rq-company').value){ const d = user.email.split('@')[1] || ''; $('rq-company').value = d.split('.')[0].toUpperCase(); }
+    $('rq-name').focus();
+  }
+  async function staffRequests(){
+    const {data, error} = await sb.from('access_requests').select('email').eq('status', 'pending');
+    if(error || !data || !data.length) return;
+    const n = $('staff-req'); n.hidden = false; n.replaceChildren();
+    const a1 = document.createElement('a'); a1.href = 'ssl.html#access'; a1.textContent = 'SSL';
+    const a2 = document.createElement('a'); a2.href = 'nsl.html#access'; a2.textContent = 'NSL';
+    n.append(`${data.length} access request${data.length === 1 ? '' : 's'} waiting — review in the Access tab (`, a1, ' or ', a2, ').');
+  }
+  function setPw(){
+    show('v-setpw'); $('sp-email').textContent = user.email; $('sp-user').value = user.email;
+    $('sp-pw').value = ''; $('sp-pw2').value = ''; msg('sp-msg', ''); $('sp-pw').focus();
+  }
+  function route(session){
+    user = session ? session.user : null;
+    if(!user){ show('v-signin'); return; }
+    if(wantSetPw && !shown){ shown = true; history.replaceState(null, '', HERE); setPw(); return; }
+    home();
+  }
+
+  $('f-signin').addEventListener('submit', async e => {
+    e.preventDefault();
+    const em = $('si-email').value.trim().toLowerCase(), pw = $('si-pw').value;
+    if(!okEmail(em)) return msg('si-msg', 'Enter your email address.');
+    if(!pw) return msg('si-msg', 'Enter your password.');
+    $('si-go').disabled = true; msg('si-msg', '');
+    const {data, error} = await sb.auth.signInWithPassword({email:em, password:pw});
+    $('si-go').disabled = false;
+    if(error){
+      msg('si-msg', /invalid login/i.test(error.message) ? "Email or password not recognised. If you haven't set a password yet, use the link below." :
+                    /not confirmed/i.test(error.message) ? 'This address has not been confirmed yet — use the link below to get a new email.' : error.message);
+      return; }
+    $('si-pw').value = ''; user = data.user; home();
+  });
+  $('to-link').addEventListener('click', () => { show('v-link'); $('ln-email').value = $('si-email').value; msg('ln-msg', ''); $('ln-email').focus(); });
+  $('to-signin').addEventListener('click', () => show('v-signin'));
+  $('sent-back').addEventListener('click', () => show('v-signin'));
+  $('f-link').addEventListener('submit', async e => {
+    e.preventDefault();
+    const em = $('ln-email').value.trim().toLowerCase();
+    if(!okEmail(em)) return msg('ln-msg', 'Enter your email address.');
+    $('ln-go').disabled = true; msg('ln-msg', '');
+    // one-time sign-in link (creates the account the first time); the page then asks for a password
+    const {error} = await sb.auth.signInWithOtp({email:em, options:{emailRedirectTo: HERE + '?setpw=1'}});
+    $('ln-go').disabled = false;
+    if(error) return msg('ln-msg', /rate|seconds/i.test(error.message) ? 'Too many requests — wait a minute and try again.' : 'Could not send the link: ' + error.message);
+    $('sent-to').textContent = em; show('v-sent');
+  });
+  $('f-setpw').addEventListener('submit', async e => {
+    e.preventDefault();
+    const a = $('sp-pw').value, b = $('sp-pw2').value;
+    if(a.length < 8) return msg('sp-msg', 'Use at least 8 characters.');
+    if(a !== b) return msg('sp-msg', "The two passwords don't match.");
+    $('sp-go').disabled = true; msg('sp-msg', '');
+    const {error} = await sb.auth.updateUser({password:a});
+    $('sp-go').disabled = false;
+    if(error) return msg('sp-msg', /same|different/i.test(error.message) ? 'That is your current password — choose a new one.' :
+                                   /weak|short|characters/i.test(error.message) ? 'Password too weak: ' + error.message : 'Could not save: ' + error.message);
+    await home(); msg('home-msg', 'Password saved. Next time, sign in with your email and password.', true);
+  });
+  $('sp-skip').addEventListener('click', () => home());
+  $('to-request').addEventListener('click', () => {
+    show('v-link'); $('ln-email').value = $('si-email').value; msg('ln-msg', '');
+    $('ln-title').textContent = 'Request access';
+    $('ln-intro').textContent = "First, confirm your email address. We'll send a one-time link — open it on this device, choose a password, and you'll be taken to a short request form. Franmarine reviews every request.";
+    $('ln-email').focus(); });
+  $('to-link').addEventListener('click', () => { $('ln-title').textContent = 'Set or reset your password'; $('ln-intro').textContent = "Enter your email address and we'll send you a one-time link. Open it on this device to choose a password; after that you sign in with your email and password."; });
+  $('rq-edit').addEventListener('click', () => requestView(true));
+  $('f-request').addEventListener('submit', async e => {
+    e.preventDefault();
+    const name = $('rq-name').value.trim(), company = $('rq-company').value.trim(), reason = $('rq-reason').value.trim();
+    if(!name) return msg('rq-msg', 'Enter your name.');
+    $('rq-go').disabled = true; msg('rq-msg', '');
+    const {error} = await sb.from('access_requests').upsert({email:user.email, name, company:company || null, reason:reason || null, status:'pending', requested_at:new Date().toISOString()});
+    $('rq-go').disabled = false;
+    if(error) return msg('rq-msg', 'Could not send the request: ' + error.message);
+    await requestView();
+  });
+
+  sb.auth.onAuthStateChange((ev, session) => {
+    if(ev === 'PASSWORD_RECOVERY' && session){ user = session.user; shown = true; history.replaceState(null, '', HERE); setPw(); return; }
+    if(ev === 'SIGNED_OUT'){ user = null; show('v-signin'); }
+  });
+  sb.auth.getSession().then(({data}) => route(data && data.session));
+})();
+</script>
+</body></html>

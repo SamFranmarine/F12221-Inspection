@@ -1114,7 +1114,8 @@ MKEYS.forEach(k=>{ const M = MEM[k];
   DEFAULTS[k] = M.kind==='elev' ? {id:autoId(k), structure:'SSL', od:'', wt:'', ffs:'', bottom:+M.p0.y.toFixed(2), top:+M.p1.y.toFixed(2), readings:{}, remarks:{}}
                                 : {id:autoId(k), structure:'SSL', od:'', wt:'', ffs:'', length:M.len, readings:{}, remarks:{}};
 });
-const STORE_KEY = 'ssl-itp002-ut-v3', BACKUP_FMT = 'ssl-itp002-ut';
+// local copy is keyed to the database it came from, so sites sharing a browser origin never mix data
+const STORE_KEY = 'ssl-itp002-ut-v3@' + (((window.F12221_CONFIG||{}).SUPABASE_URL||'').match(/\/\/([^./]+)/)||[,'local'])[1], BACKUP_FMT = 'ssl-itp002-ut';
 function clone(o){ return JSON.parse(JSON.stringify(o)); }
 function loadState(){
   let st = clone(DEFAULTS);

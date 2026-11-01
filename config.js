@@ -4,7 +4,7 @@
 // The anon key is designed to be public (it is visible to every browser that opens the site);
 // the data is protected by the row-level security rules in supabase/schema.sql. Never put the service_role key here.
 window.F12221_CONFIG = {
-  SUPABASE_URL: 'https://FILL-IN-PROJECT-REF.supabase.co',   // FILL IN
-  SUPABASE_ANON_KEY: 'FILL-IN-ANON-PUBLIC-KEY',              // FILL IN
+  SUPABASE_URL: 'https://rbuljpthvlkqetvftdkk.supabase.co/rest/v1/',   // FILL IN
+  SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJidWxqcHRodmxrcWV0dmZ0ZGtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM1MTkxMDQsImV4cCI6MjEwOTA5NTEwNH0.1JvwEe6oNREll1CoLzx7I6_5LPcGMnRf4m88EveVY0Q',              // FILL IN
   STAFF_DOMAIN: 'franmarine.com.au'                          // Franmarine addresses are editors automatically (must match staff_domain() in schema.sql)
 };
